@@ -4,7 +4,8 @@ class_name Enemy1
 # Movement properties
 @export_group("Movement")
 @export var speed = 150
-@export var jump_velocity = -300
+@export var jump_px_height = 64
+@onready var jump_velocity = -sqrt(2 * gravity * jump_px_height) #convert jump px to velocity
 @export var gravity = 980
 @export var acceleration = 0.1
 @export var deceleration = 0.2
@@ -41,6 +42,7 @@ var current_state = EnemyState.IDLE
 @onready var player = get_tree().get_first_node_in_group("player")
 
 func _ready():
+	
 	# Store initial position for patrol
 	patrol_origin = global_position
 	

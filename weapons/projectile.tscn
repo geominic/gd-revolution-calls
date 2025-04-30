@@ -8,8 +8,10 @@ size = Vector2(80, 8)
 [node name="projectile" type="Area2D"]
 collision_mask = 2
 script = ExtResource("1_i3113")
+gravity_strength = 50.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("RectangleShape2D_bq8sv")
 
 [node name="Polygon2D" type="Polygon2D" parent="."]

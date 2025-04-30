@@ -10,7 +10,8 @@ size = Vector2(24.1957, 24.1957)
 position = Vector2(32, 32)
 scale = Vector2(2, 2)
 script = ExtResource("1_4ou3p")
-weapon_cooldown = 0.2
+weapon_cooldown = 0.05
+projectile_speed = 800
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1.4489e-06, 2.5034e-06)
@@ -18,10 +19,20 @@ scale = Vector2(0.0949554, 0.0763722)
 texture = ExtResource("2_jbujf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 scale = Vector2(1.32255, 1.32255)
 shape = SubResource("RectangleShape2D_2811r")
 
 [node name="WeaponSpawn" type="Marker2D" parent="."]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.485, 0.485)
+zoom = Vector2(0.73, 0.73)
+
+[node name="StaminaBar" type="ProgressBar" parent="."]
+offset_left = 28.0
+offset_top = 14.0
+offset_right = 64.0
+offset_bottom = 18.0
+rotation = -1.57071
+value = 100.0
+show_percentage = false

@@ -10,6 +10,7 @@ size = Vector2(32, 48)
 position = Vector2(48, 40)
 script = ExtResource("1_p1whi")
 can_fly = false
+can_jump = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-1.44891e-06, 3.8147e-06)
