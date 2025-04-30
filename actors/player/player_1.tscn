@@ -10,6 +10,7 @@ size = Vector2(24.1957, 24.1957)
 position = Vector2(32, 32)
 scale = Vector2(2, 2)
 script = ExtResource("1_4ou3p")
+jump_px_height = 128
 weapon_cooldown = 0.05
 projectile_speed = 800
 

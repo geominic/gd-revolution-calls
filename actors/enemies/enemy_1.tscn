@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dlbnjyhbp8nmy"]
 
-[ext_resource type="Script" path="res://scripts/enemy_1.gd" id="1_p1whi"]
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_p1whi"]
 [ext_resource type="Texture2D" uid="uid://suh1qdrvqeng" path="res://Screenshot 2025-01-30 125637.png" id="2_ootpq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6i477"]
@@ -9,7 +9,6 @@ size = Vector2(32, 48)
 [node name="enemy1" type="CharacterBody2D"]
 position = Vector2(48, 40)
 script = ExtResource("1_p1whi")
-can_fly = false
 can_jump = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

@@ -204,7 +204,7 @@ func apply_gravity(delta):
 		velocity.y += gravity * gravity_multiplier * delta
 
 func handle_attack(delta):
-	if Input.is_action_just_pressed("attack") and weapon_timer <= 0:
+	if Input.is_action_pressed("attack") and weapon_timer <= 0:
 		throw_weapon()
 		weapon_timer = weapon_cooldown  # Apply cooldown
 

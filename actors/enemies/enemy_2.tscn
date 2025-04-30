@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://05q0pa5gmd4i"]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_p73qa"]
+[ext_resource type="Texture2D" uid="uid://suh1qdrvqeng" path="res://Screenshot 2025-01-30 125637.png" id="2_mk8al"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6i477"]
+size = Vector2(32, 48)
+
+[node name="enemy2" type="CharacterBody2D"]
+position = Vector2(48, 40)
+script = ExtResource("1_p73qa")
+speed = 250
+jump_px_height = 80
+can_fly = false
+can_jump = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-1.44891e-06, -40.0001)
+scale = Vector2(0.0949555, 0.305489)
+texture = ExtResource("2_mk8al")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("RectangleShape2D_6i477")
