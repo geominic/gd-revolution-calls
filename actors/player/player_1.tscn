@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://s6bq3gam75ua"]
+
+[ext_resource type="Script" path="res://scripts/player_1.gd" id="1_4ou3p"]
+[ext_resource type="Texture2D" uid="uid://suh1qdrvqeng" path="res://Screenshot 2025-01-30 125637.png" id="2_jbujf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2811r"]
+size = Vector2(24.1957, 24.1957)
+
+[node name="player1" type="CharacterBody2D" groups=["player"]]
+position = Vector2(32, 32)
+scale = Vector2(2, 2)
+script = ExtResource("1_4ou3p")
+weapon_cooldown = 0.2
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1.4489e-06, 2.5034e-06)
+scale = Vector2(0.0949554, 0.0763722)
+texture = ExtResource("2_jbujf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(1.32255, 1.32255)
+shape = SubResource("RectangleShape2D_2811r")
+
+[node name="WeaponSpawn" type="Marker2D" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.485, 0.485)

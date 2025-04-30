@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://cyc27bfyh3s81"]
+
+[ext_resource type="PackedScene" uid="uid://s6bq3gam75ua" path="res://actors/player/player_1.tscn" id="1_skjh3"]
+[ext_resource type="PackedScene" uid="uid://dlbnjyhbp8nmy" path="res://actors/enemies/enemy_1.tscn" id="2_504ad"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sl7t7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6b5jk"]
+size = Vector2(256, 80)
+
+[node name="MapTest" type="Node2D"]
+
+[node name="terrain" type="TileMapLayer" parent="."]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(576, 608)
+scale = Vector2(4.36, 1)
+physics_material_override = SubResource("PhysicsMaterial_sl7t7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("RectangleShape2D_6b5jk")
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D"]
+position = Vector2(-312, -168)
+polygon = PackedVector2Array(184, 128, 440, 128, 440, 208, 184, 208)
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(576, 608)
+scale = Vector2(4.36, 1)
+physics_material_override = SubResource("PhysicsMaterial_sl7t7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+shape = SubResource("RectangleShape2D_6b5jk")
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D2"]
+position = Vector2(-312, -168)
+polygon = PackedVector2Array(184, 128, 440, 128, 440, 208, 184, 208)
+
+[node name="player1" parent="." instance=ExtResource("1_skjh3")]
+position = Vector2(992, 32)
+
+[node name="enemy1" parent="." instance=ExtResource("2_504ad")]
