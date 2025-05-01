@@ -4,21 +4,31 @@
 [ext_resource type="Texture2D" uid="uid://suh1qdrvqeng" path="res://Screenshot 2025-01-30 125637.png" id="2_mk8al"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6i477"]
-size = Vector2(32, 48)
+size = Vector2(48, 104)
 
-[node name="enemy2" type="CharacterBody2D"]
-position = Vector2(48, 40)
+[node name="enemy2" type="CharacterBody2D" groups=["enemy"]]
+collision_layer = 2
 script = ExtResource("1_p73qa")
 speed = 250
-jump_px_height = 80
+jump_px_height = 128
 can_fly = false
 can_jump = true
+detection_range = 1000
+jump_cooldown = 1.5
+edge_detection_distance = 64
+gap_jump_threshold = 172
+obstacle_detection_distance = 64
+max_fall_height = 172
+max_health = 150
+knockback_force = 100
+invincibility_duration = 0.3
+flash_intensity = 1.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-1.44891e-06, -40.0001)
-scale = Vector2(0.0949555, 0.305489)
+position = Vector2(9.53674e-07, -28.0001)
+scale = Vector2(0.142433, 0.24821)
 texture = ExtResource("2_mk8al")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
+position = Vector2(0, -28)
 shape = SubResource("RectangleShape2D_6i477")

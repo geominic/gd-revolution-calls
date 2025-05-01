@@ -206,13 +206,15 @@ func apply_gravity(delta):
 func handle_attack(delta):
 	if Input.is_action_pressed("attack") and weapon_timer <= 0:
 		throw_weapon()
-		weapon_timer = weapon_cooldown  # Apply cooldown
+		weapon_timer = weapon_cooldown
 
 func throw_weapon():
 	var projectile = projectile_scene.instantiate()
+	
+	# Set projectile properties
 	projectile.global_position = $WeaponSpawn.global_position
-	projectile.speed = projectile_speed
-	projectile.gravity_strength = projectile_gravity
+	
+	# Add to scene
 	get_tree().current_scene.add_child(projectile)  # Add to the active scene root for proper positioning
 	
 	# Optional: trigger attack animation

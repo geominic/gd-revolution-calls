@@ -10,8 +10,8 @@ size = Vector2(24.1957, 24.1957)
 position = Vector2(32, 32)
 scale = Vector2(2, 2)
 script = ExtResource("1_4ou3p")
-jump_px_height = 128
-weapon_cooldown = 0.05
+speed = 400
+jump_px_height = 172
 projectile_speed = 800
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

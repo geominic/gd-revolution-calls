@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://d1o8g1vik4tt"]
+
+[ext_resource type="Script" path="res://scripts/enemy_spawner.gd" id="1_spawner"]
+[ext_resource type="PackedScene" uid="uid://dlbnjyhbp8nmy" path="res://actors/enemies/enemy_1.tscn" id="2_udqsm"]
+[ext_resource type="PackedScene" uid="uid://05q0pa5gmd4i" path="res://actors/enemies/enemy_2.tscn" id="3_wgaol"]
+
+[node name="EnemySpawner" type="Node2D"]
+script = ExtResource("1_spawner")
+min_distance_from_player = 600
+max_distance_from_player = 900
+spawn_interval_seconds = 1.0
+max_enemies = 5
+spawn_height_offset = 500
+enemy_scenes = Array[PackedScene]([ExtResource("2_udqsm"), ExtResource("3_wgaol")])
+
+[node name="SpawnTimer" type="Timer" parent="."]
+wait_time = 3.0
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
