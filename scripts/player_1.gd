@@ -4,7 +4,22 @@ extends CharacterBody2D
 @export_group("FOV")
 @export var default_zoom = Vector2(0.73, 0.73)  # Match your current camera zoom
 @export var sprint_zoom = Vector2(0.65, 0.65)  # Zoomed out while sprinting
+@export var slowmo_zoom = Vector2(1, 1)  # Zoomed in while in slow-mo
 @export var zoom_lerp_speed = 5.0  # How fast the FOV changes
+
+# Slow-motion properties
+@export_group("Slow Motion")
+@export var slow_mo_enabled = true
+@export_enum("On Stillness", "On Attack") var slow_mo_trigger_type = 0
+@export var slow_mo_time_scale = 0.5  # How slow time becomes (0.5 = half speed)
+@export var slow_mo_transition_speed = 2.0  # How fast to transition to/from slow-mo
+@export var slow_mo_movement_threshold = 10.0  # Speed below which slow-mo activates
+@export var slow_mo_delay = 0.5  # Delay before slow-mo activates when standing still
+@export var slow_mo_attack_duration = 0.5  # How long slow-mo lasts when attacking
+var slow_mo_timer = 0.0
+var slow_mo_attack_timer = 0.0
+var current_time_scale = 1.0
+var is_in_slow_mo = false
 
 # Movement properties
 @export_group("Movement")
@@ -104,7 +119,10 @@ func _physics_process(delta):
 	# Update animation state
 	update_animation_state()
 	
-	# Update FOV
+	# Handle slow-motion effect
+	handle_slow_motion(delta)
+	
+	# Update FOV - moved after slow-motion handling
 	update_fov(delta)
 
 func update_timers(delta):
@@ -204,6 +222,8 @@ func apply_gravity(delta):
 		velocity.y += gravity * gravity_multiplier * delta
 
 func handle_attack(delta):
+	weapon_timer -= delta
+	
 	if Input.is_action_pressed("attack") and weapon_timer <= 0:
 		throw_weapon()
 		weapon_timer = weapon_cooldown
@@ -266,8 +286,15 @@ func update_facing_direction(direction):
 func update_fov(delta):
 	var target_zoom = default_zoom
 	
-	# Change FOV based on sprinting and horizontal speed
-	if is_sprinting and abs(velocity.x) > speed * 0.5:
+	# Determine target zoom based on state
+	if is_in_slow_mo:
+		# Slow-mo zoom takes priority
+		target_zoom = slowmo_zoom
+		
+		# Optional: Add slight chromatic aberration or vignette effect
+		# This would require a shader material on the camera
+	elif is_sprinting and abs(velocity.x) > speed * 0.5:
+		# Sprint zoom when moving fast
 		target_zoom = sprint_zoom
 		
 		# Optional: Add slight tilt based on movement direction
@@ -284,3 +311,98 @@ func update_stamina_bar_visibility(delta):
 	# Smoothly interpolate the alpha
 	stamina_bar_alpha = move_toward(stamina_bar_alpha, target_alpha, delta / stamina_bar_fade_duration)
 	stamina_bar.modulate.a = stamina_bar_alpha
+
+func handle_slow_motion(delta):
+	if !slow_mo_enabled:
+		return
+	
+	# Handle different slow-mo trigger types
+	match slow_mo_trigger_type:
+		0: # On Stillness
+			handle_stillness_slow_mo(delta)
+		1: # On Attack
+			handle_attack_slow_mo(delta)
+
+func handle_stillness_slow_mo(delta):
+	# Check if player is moving using individual conditions
+	var x_moving = abs(velocity.x) > slow_mo_movement_threshold
+	var y_moving = abs(velocity.y) > slow_mo_movement_threshold
+	var jumping = Input.is_action_pressed("jump")
+	
+	# Combine conditions
+	var is_moving = false
+	if x_moving or y_moving or jumping:
+		is_moving = true
+	
+	# Update slow-mo timer
+	if !is_moving:
+		slow_mo_timer += delta
+		if slow_mo_timer >= slow_mo_delay:
+			is_in_slow_mo = true
+	else:
+		slow_mo_timer = 0.0
+		is_in_slow_mo = false
+	
+	# Calculate target time scale
+	var target_time_scale
+	if is_in_slow_mo:
+		target_time_scale = slow_mo_time_scale
+	else:
+		target_time_scale = 1.0
+	
+	# Apply ease-in transition for smoother effect
+	var transition_speed = slow_mo_transition_speed
+	if current_time_scale < target_time_scale:
+		# Leaving slow-mo (speeding up) - faster transition
+		transition_speed *= 0.75
+	else:
+		# Entering slow-mo (slowing down) - smoother transition
+		transition_speed *= 2.25
+	
+	# Use ease_out interpolation for smoother transition
+	var weight = clamp(delta * transition_speed, 0.0, 1.0)
+	var ease_factor = 1.0 - (1.0 - weight) * (1.0 - weight)  # Quadratic ease-out
+	current_time_scale = lerp(current_time_scale, target_time_scale, ease_factor)
+	
+	# Apply time scale to game engine
+	Engine.time_scale = current_time_scale
+
+func handle_attack_slow_mo(delta):
+	# Check for attack input
+	if Input.is_action_pressed("attack"):
+		is_in_slow_mo = true
+		slow_mo_attack_timer = slow_mo_attack_duration
+	
+	# Update attack slow-mo timer
+	if slow_mo_attack_timer > 0:
+		slow_mo_attack_timer -= delta
+		if slow_mo_attack_timer <= 0:
+			is_in_slow_mo = false
+	
+	# Calculate target time scale
+	var target_time_scale
+	if is_in_slow_mo:
+		target_time_scale = slow_mo_time_scale
+	else:
+		target_time_scale = 1.0
+	
+	# Apply ease-in transition for smoother effect
+	var transition_speed = slow_mo_transition_speed
+	if current_time_scale < target_time_scale:
+		# Leaving slow-mo
+		transition_speed *= 0.75
+	else:
+		# Entering slow-mo
+		transition_speed *= 2.25
+	
+	# Use ease_out interpolation for smoother transition
+	var weight = clamp(delta * transition_speed, 0.0, 1.0)
+	var ease_factor = 1.0 - (1.0 - weight) * (1.0 - weight)  # Quadratic ease-out
+	current_time_scale = lerp(current_time_scale, target_time_scale, ease_factor)
+	
+	# Apply time scale to game engine
+	Engine.time_scale = current_time_scale
+
+func _exit_tree():
+	# Reset time scale when player is removed from scene
+	Engine.time_scale = 1.0
