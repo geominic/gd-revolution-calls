@@ -23,11 +23,11 @@ var is_in_slow_mo = false
 
 # Movement properties
 @export_group("Movement")
-@export var speed = 300
+@export var speed = 400
 @export var sprint_speed_multiplier = 1.6  # How much faster sprint is
 @export var acceleration = 0.2
 @export var deceleration = 0.1
-@export var air_control = 0.1  # Control in air (was missing)
+@export var air_control = 0.1  # Control in air
 
 # Stamina properties
 @export_group("Stamina")

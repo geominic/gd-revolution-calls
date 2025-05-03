@@ -20,12 +20,12 @@ class_name Enemy1
 
 # Navigation
 @export_group("Navigation")
-@export var edge_detection_distance = 50  # How far ahead to check for edges
-@export var gap_jump_threshold = 150  # Maximum gap width enemy can jump
+@export var edge_detection_distance = 64  # How far ahead to check for edges
+@export var gap_jump_threshold = 128  # Maximum gap width enemy can jump
 @onready var gap_detection_distance = edge_detection_distance + gap_jump_threshold  # Derived from other values
-@export var obstacle_detection_distance = 50  # How far ahead to check for obstacles
+@export var obstacle_detection_distance = 64  # How far ahead to check for obstacles
 @onready var obstacle_jump_height = jump_velocity  # Same as jump height
-@export var max_fall_height = 150  # Maximum height enemy will willingly fall
+@export var max_fall_height = 172  # Maximum height enemy will willingly fall
 @export var pathfinding_update_time = 1.0  # How often to recalculate path
 
 # AI behavior
@@ -96,7 +96,7 @@ func setup_raycasts():
 		edge_raycast.name = "EdgeDetector"
 		add_child(edge_raycast)
 		edge_raycast.target_position = Vector2(0, edge_detection_distance)
-		edge_raycast.collision_mask = 1  # Terrain layer
+		edge_raycast.collision_mask = 1  # Only collide with terrain layer (layer 1)
 	else:
 		edge_raycast = $EdgeDetector
 	
@@ -106,7 +106,7 @@ func setup_raycasts():
 		obstacle_raycast.name = "ObstacleDetector"
 		add_child(obstacle_raycast)
 		obstacle_raycast.target_position = Vector2(obstacle_detection_distance, 0)
-		obstacle_raycast.collision_mask = 1  # Terrain layer
+		obstacle_raycast.collision_mask = 1  # Only collide with terrain layer (layer 1)
 	else:
 		obstacle_raycast = $ObstacleDetector
 	
@@ -116,7 +116,7 @@ func setup_raycasts():
 		wall_raycast.name = "WallDetector"
 		add_child(wall_raycast)
 		wall_raycast.target_position = Vector2(obstacle_detection_distance, 0)
-		wall_raycast.collision_mask = 1  # Terrain layer
+		wall_raycast.collision_mask = 1  # Only collide with terrain layer (layer 1)
 	else:
 		wall_raycast = $WallDetector
 	
@@ -126,7 +126,7 @@ func setup_raycasts():
 		gap_raycast_near.name = "GapDetectorNear"
 		add_child(gap_raycast_near)
 		gap_raycast_near.target_position = Vector2(0, edge_detection_distance)
-		gap_raycast_near.collision_mask = 1  # Terrain layer
+		gap_raycast_near.collision_mask = 1  # Only collide with terrain layer (layer 1)
 	else:
 		gap_raycast_near = $GapDetectorNear
 		
@@ -135,7 +135,7 @@ func setup_raycasts():
 		gap_raycast_far.name = "GapDetectorFar"
 		add_child(gap_raycast_far)
 		gap_raycast_far.target_position = Vector2(0, edge_detection_distance)
-		gap_raycast_far.collision_mask = 1  # Terrain layer
+		gap_raycast_far.collision_mask = 1  # Only collide with terrain layer (layer 1)
 	else:
 		gap_raycast_far = $GapDetectorFar
 
@@ -250,11 +250,12 @@ func patrol_behavior(delta):
 		# Ground patrol with edge detection and obstacle avoidance
 		var should_turn = false
 		
-		# Check for edges
+		# Check for edges - IMPORTANT: This is the key fix
 		edge_raycast.force_raycast_update()
 		if !edge_raycast.is_colliding() and is_on_floor():
-			# Check if we can jump over the gap
+			# We're at an edge, decide what to do
 			if can_jump and is_on_floor() and jump_timer <= 0:
+				# Check if we can jump over the gap
 				if can_jump_over_gap():
 					# Jump over gap
 					velocity.y = jump_velocity
@@ -263,9 +264,11 @@ func patrol_behavior(delta):
 					velocity.x = patrol_direction * speed * 1.5
 					print("Enemy jumping over gap")
 				else:
+					# Can't jump the gap, so turn around
 					should_turn = true
 					print("Enemy turning at edge - can't jump gap")
 			else:
+				# Can't jump, so turn around
 				should_turn = true
 				print("Enemy turning at edge - can't jump")
 		
@@ -293,9 +296,10 @@ func patrol_behavior(delta):
 			patrol_direction *= -1
 			update_facing_direction(patrol_direction)
 			patrol_wait_timer = patrol_wait_time
-		
-		var target_speed = patrol_direction * patrol_speed
-		velocity.x = move_toward(velocity.x, target_speed, acceleration * speed * delta)
+			velocity.x = 0  # Stop horizontal movement immediately when turning
+		else:
+			var target_speed = patrol_direction * patrol_speed
+			velocity.x = move_toward(velocity.x, target_speed, acceleration * speed * delta)
 		
 		apply_gravity(delta)
 
@@ -316,7 +320,7 @@ func can_jump_over_gap() -> bool:
 			global_position + Vector2(facing_direction * 40, 0),
 			global_position + Vector2(facing_direction * gap_detection_distance, max_fall_height)
 		)
-		query.collision_mask = 1  # Terrain layer
+		query.collision_mask = 1  # Only check collision with terrain layer (layer 1)
 		var result = space_state.intersect_ray(query)
 		
 		if result:
@@ -351,7 +355,7 @@ func pursue_player(delta):
 				velocity.y = jump_velocity
 				jump_timer = jump_cooldown
 				#Boost horizontal speed to clear the gap
-				velocity.x = dir_to_player * speed * 1.5
+				velocity.x = dir_to_player * speed * 1.25
 				print("Enemy jumping over gap to pursue player")
 				return
 			

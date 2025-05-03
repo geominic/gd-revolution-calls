@@ -11,7 +11,13 @@ size = Vector2(24.1957, 24.1957)
 position = Vector2(32, 32)
 scale = Vector2(2, 2)
 script = ExtResource("1_4ou3p")
+default_zoom = Vector2(0.75, 0.75)
+slowmo_zoom = Vector2(0.85, 0.85)
+zoom_lerp_speed = 4.0
 slow_mo_trigger_type = 1
+slow_mo_time_scale = 0.8
+speed = 300
+jump_px_height = 172
 projectile_scene = ExtResource("2_sl5wr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

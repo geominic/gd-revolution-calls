@@ -9,11 +9,12 @@ size = Vector2(48, 64)
 [node name="enemy1" type="CharacterBody2D" groups=["enemy"]]
 collision_layer = 2
 script = ExtResource("1_p1whi")
+speed = 200
 acceleration = 0.2
 detection_range = 1000
 patrol_distance = 200
-max_health = 50
-knockback_duration = 0.3
+max_health = 150
+knockback_force = 200
 invincibility_duration = 0.3
 flash_intensity = 1.0
 
