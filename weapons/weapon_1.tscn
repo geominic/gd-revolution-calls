@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://py8r38qgnvkj"]
 
-[ext_resource type="Script" path="res://scripts/projectile.gd" id="1_i3113"]
+[ext_resource type="Script" path="res://scripts/weapon_1.gd" id="1_i3113"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bq8sv"]
 size = Vector2(80, 8)
@@ -8,6 +8,7 @@ size = Vector2(80, 8)
 [node name="projectile" type="Area2D"]
 collision_mask = 2
 script = ExtResource("1_i3113")
+weapon_cooldown = 1.0
 gravity_strength = 125.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

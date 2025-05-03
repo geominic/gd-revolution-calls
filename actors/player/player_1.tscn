@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://s6bq3gam75ua"]
+[gd_scene load_steps=5 format=3 uid="uid://s6bq3gam75ua"]
 
 [ext_resource type="Script" path="res://scripts/player_1.gd" id="1_4ou3p"]
 [ext_resource type="Texture2D" uid="uid://suh1qdrvqeng" path="res://Screenshot 2025-01-30 125637.png" id="2_jbujf"]
+[ext_resource type="PackedScene" uid="uid://py8r38qgnvkj" path="res://weapons/weapon_1.tscn" id="2_sl5wr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2811r"]
 size = Vector2(24.1957, 24.1957)
@@ -10,14 +11,8 @@ size = Vector2(24.1957, 24.1957)
 position = Vector2(32, 32)
 scale = Vector2(2, 2)
 script = ExtResource("1_4ou3p")
-slow_mo_time_scale = 0.3
-slow_mo_transition_speed = 1.25
-slow_mo_movement_threshold = 16.0
-slow_mo_delay = 0.35
-slow_mo_attack_duration = 0.25
-speed = 400
-jump_px_height = 172
-projectile_speed = 800
+slow_mo_trigger_type = 1
+projectile_scene = ExtResource("2_sl5wr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1.4489e-06, 2.5034e-06)

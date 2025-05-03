@@ -56,9 +56,7 @@ var stamina_bar_alpha = 0.0
 
 # Combat properties
 @export_group("Combat")
-@export var weapon_cooldown = 0.3
-@export var projectile_speed = 600
-@export var projectile_gravity = 100
+@export var projectile_scene: PackedScene
 
 # State tracking
 var coyote_timer = 0.0
@@ -66,9 +64,6 @@ var jump_buffer_timer = 0.0
 var can_double_jump = false
 var weapon_timer = 0.0
 var facing_direction = 1  # 1 for right, -1 for left
-
-# Preloaded scenes
-var projectile_scene = preload("res://weapons/projectile.tscn")
 
 # Animation states
 enum PlayerState {IDLE, RUN, JUMP, FALL, ATTACK}
@@ -222,20 +217,33 @@ func apply_gravity(delta):
 		velocity.y += gravity * gravity_multiplier * delta
 
 func handle_attack(delta):
-	weapon_timer -= delta
+	if weapon_timer > 0:
+		weapon_timer -= delta
 	
 	if Input.is_action_pressed("attack") and weapon_timer <= 0:
 		throw_weapon()
-		weapon_timer = weapon_cooldown
+		
+		# Get cooldown from the projectile scene
+		if projectile_scene:
+			var temp_projectile = projectile_scene.instantiate()
+			weapon_timer = temp_projectile.weapon_cooldown
+			temp_projectile.queue_free()
 
 func throw_weapon():
+	if not projectile_scene:
+		return
+		
 	var projectile = projectile_scene.instantiate()
 	
-	# Set projectile properties
-	projectile.global_position = $WeaponSpawn.global_position
+	# Add to scene first so it can access global coordinates
+	get_tree().current_scene.add_child(projectile)
 	
-	# Add to scene
-	get_tree().current_scene.add_child(projectile)  # Add to the active scene root for proper positioning
+	# Initialize the projectile with proper parameters
+	# Let the projectile use its own default speed
+	projectile.initialize(
+		$WeaponSpawn.global_position,  # Spawn position
+		get_global_mouse_position()    # Target position (mouse)
+	)
 	
 	# Optional: trigger attack animation
 	# $AnimationPlayer.play("attack")
